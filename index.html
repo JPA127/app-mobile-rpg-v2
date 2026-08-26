@@ -1,127 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0f0f1a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>RPG de Produtividade</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPG Produtividade</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Header -->
+    <!-- Cabeçalho do App -->
     <header class="app-header">
-      <div class="user-info">
-        <div class="avatar">🧙</div>
-        <div class="stats">
-          <h1>Nível <span id="level">1</span></h1>
-          <div class="xp-bar">
-            <div class="xp-fill" id="xpFill" style="width: 0%"></div>
-          </div>
-          <p class="xp-text"><span id="currentXp">0</span> / <span id="maxXp">100</span> XP</p>
-        </div>
-      </div>
-      <div class="coins">
-        <span class="coin-icon">🪙</span>
-        <span id="coinCount">0</span>
-      </div>
+        <h1>Missões Ativas</h1>
+        <span class="xp-badge">Nível 5 | 1200 XP</span>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content" id="mainContent">
-      <!-- Missões Tab -->
-      <section class="tab-content active" id="tab-missoes">
-        <h2 class="section-title">Missões Ativas</h2>
-        <div class="missions-list" id="missionsList"></div>
-      </section>
-
-      <!-- Loja Tab -->
-      <section class="tab-content" id="tab-loja">
-        <h2 class="section-title">Loja de Recompensas</h2>
-        <div class="shop-list" id="shopList"></div>
-      </section>
-
-      <!-- Perfil Tab -->
-      <section class="tab-content" id="tab-perfil">
-        <h2 class="section-title">Perfil do Herói</h2>
-        <div class="profile-card">
-          <div class="profile-avatar">🧙</div>
-          <h3 id="profileName">Aventureiro</h3>
-          <p class="profile-rank">Rank: <span id="profileRank">E</span></p>
-          <div class="profile-stats">
-            <div class="stat-item">
-              <span class="stat-label">Missões Completadas</span>
-              <span class="stat-value" id="completedCount">0</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Total de XP</span>
-              <span class="stat-value" id="totalXp">0</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Moedas Gastas</span>
-              <span class="stat-value" id="spentCoins">0</span>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- Onde as missões (ou os Skeletons) vão aparecer -->
+    <main id="quest-board" class="feed">
+        <!-- O JavaScript vai injetar o conteúdo aqui -->
     </main>
 
-    <!-- FAB -->
-    <button class="fab" id="fabBtn" aria-label="Adicionar nova missão">+</button>
-
-    <!-- Bottom Navigation -->
+    <!-- ZONA DO POLEGAR (Requisito 1) -->
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-tab="missoes" aria-label="Missões">
-        <span class="nav-icon">⚔️</span>
-        <span class="nav-label">Missões</span>
-      </button>
-      <button class="nav-btn" data-tab="loja" aria-label="Loja">
-        <span class="nav-icon">🏪</span>
-        <span class="nav-label">Loja</span>
-      </button>
-      <button class="nav-btn" data-tab="perfil" aria-label="Perfil">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Perfil</span>
-      </button>
+        <button class="nav-item active">⚔️ Missões</button>
+        <button class="nav-item">💰 Loja</button>
+        <button class="nav-item">🛡️ Perfil</button>
+        
+        <!-- Botão Flutuante (FAB) -->
+        <button class="fab" aria-label="Nova Missão">+</button>
     </nav>
 
-    <!-- Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-      <div class="modal">
-        <h3>Nova Missão</h3>
-        <input type="text" id="missionTitle" placeholder="Título da missão..." />
-        <textarea id="missionDesc" placeholder="Descrição..." rows="2"></textarea>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="missionDiff">Dificuldade</label>
-            <select id="missionDiff">
-              <option value="easy">Fácil</option>
-              <option value="medium" selected>Médio</option>
-              <option value="hard">Difícil</option>
-              <option value="epic">Épico</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="missionXp">XP</label>
-            <input type="number" id="missionXp" value="25" min="5" max="500" />
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn-secondary" id="cancelBtn">Cancelar</button>
-          <button class="btn-primary" id="createBtn">Criar Missão</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
