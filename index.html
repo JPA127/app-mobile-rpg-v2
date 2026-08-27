@@ -3,29 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RPG Produtividade</title>
+    <title>RPG Produtividade - PWA</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <!-- Cabeçalho do App -->
     <header class="app-header">
         <h1>Missões Ativas</h1>
         <span class="xp-badge">Nível 5 | 1200 XP</span>
     </header>
 
-    <!-- Onde as missões (ou os Skeletons) vão aparecer -->
     <main id="quest-board" class="feed">
-        <!-- O JavaScript vai injetar o conteúdo aqui -->
-    </main>
+        </main>
 
-    <!-- ZONA DO POLEGAR (Requisito 1) -->
     <nav class="bottom-nav">
         <button class="nav-item active">⚔️ Missões</button>
         <button class="nav-item">💰 Loja</button>
         <button class="nav-item">🛡️ Perfil</button>
         
-        <!-- Botão Flutuante (FAB) -->
-        <button class="fab" aria-label="Nova Missão">+</button>
+        <button class="fab" id="add-btn" aria-label="Nova Missão">+</button>
     </nav>
 
     <script src="script.js"></script>
