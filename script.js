@@ -1,13 +1,44 @@
 const questBoard = document.getElementById('quest-board');
+const overlay = document.getElementById('overlay');
+const modal = document.getElementById('modal');
+const closeBtn = document.getElementById('close-btn');
 
-// Lista inicial de missões simuladas
+let currentQuestIdToComplete = null;
+let currentXP = 1200;
+
 let mockQuests = [
     { id: 1, title: "Santuário do Conhecimento", desc: "Estudar 1 hora para a aula de Mobile da Fatec.", xp: 100, icon: "📚" },
     { id: 2, title: "Treino do Bárbaro", desc: "Completar o treino do dia na Smart Fit.", xp: 80, icon: "🏋️" },
     { id: 3, title: "Derrotar o Dragão da Louça", desc: "Lavar toda a louça do jantar sem usar o celular.", xp: 50, icon: "🐉" }
 ];
 
-// REQUISITO 2: Função que renderiza os Skeleton Screens
+// Lottie JSON configurado
+const sampleLottieJSON = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+  v: "5.5.7", fr: 60, ip: 0, op: 60, w: 100, h: 100, nm: "Check",
+  layers: [{
+    ddd: 0, ind: 1, ty: 4, nm: "Checkmark", sr: 1, ks: {
+      o: { a: 0, k: 100 }, r: { a: 0, k: 0 }, p: { a: 0, k: [50, 50, 0] },
+      a: { a: 0, k: [0, 0, 0] }, s: { a: 0, k: [100, 100, 100] }
+    },
+    shapes: [{
+      ty: "grp", items: [
+        { ty: "sh", ks: { a: 0, k: { i: [[0,0],[0,0],[0,0]], o: [[0,0],[0,0],[0,0]], v: [[-20, 0], [-5, 15], [20, -10]], c: false } } },
+        { ty: "st", c: { a: 0, k: [0.73, 0.52, 0.98, 1] }, w: { a: 0, k: 7 }, lc: 2, lj: 2 },
+        { ty: "tr", p: { a: 0, k: [0, 0] }, a: { a: 0, k: [0, 0] }, s: { a: 0, k: [100, 100] }, r: { a: 0, k: 0 }, o: { a: 0, k: 100 } }
+      ]
+    }]
+  }]
+}));
+
+let lottieAnimation = null;
+if (typeof lottie !== 'undefined') {
+  lottieAnimation = lottie.loadAnimation({
+    container: document.getElementById('lottie-container'),
+    renderer: 'svg', loop: false, autoplay: false, path: sampleLottieJSON
+  });
+}
+
+// 1. Renderiza Skeletons
 function renderSkeletons() {
     questBoard.innerHTML = '';
     for(let i = 0; i < 3; i++) {
@@ -25,12 +56,12 @@ function renderSkeletons() {
     }
 }
 
-// Renderiza os Cards Reais com opção de deleção
+// 2. Renderiza Dados Reais
 function renderRealData() {
     questBoard.innerHTML = ''; 
 
     if (mockQuests.length === 0) {
-        questBoard.innerHTML = '<p style="text-align:center; color:#888; margin-top:30px;">Todas as missões foram concluídas! 🏆</p>';
+        questBoard.innerHTML = '<p style="text-align:center; color:#888; margin-top:40px;">Todas as missões foram concluídas! 🏆</p>';
         return;
     }
     
@@ -49,80 +80,103 @@ function renderRealData() {
                         <span class="reward">+${quest.xp} XP / Moedas</span>
                     </div>
                 </div>
-                <button class="btn-delete-trigger" onclick="toggleSwipeBox(${quest.id})" title="Excluir Missão">🗑️</button>
+                <div class="card-actions">
+                    <button class="btn-action" onclick="openCompleteModal(${quest.id})" title="Concluir Missão">✅</button>
+                    <button class="btn-action" onclick="toggleSwipeBox(${quest.id})" title="Excluir Missão">🗑️</button>
+                </div>
             </div>
 
             <div class="swipe-confirm-box" id="swipe-box-${quest.id}">
                 <div class="swipe-track" id="track-${quest.id}">
-                    <span class="swipe-text" id="text-${quest.id}">⏩ Arraste até o fim para excluir</span>
+                    <span class="swipe-text" id="text-${quest.id}">⏩ Arraste para excluir</span>
                     <div class="swipe-thumb" id="thumb-${quest.id}">➡️</div>
                 </div>
             </div>
         `;
 
         questBoard.appendChild(card);
-        
-        // Inicializa os eventos de toque e arrasto do Swipe para este card
         setupSwipeEvents(quest.id);
     });
 }
 
-// Alterna a exibição da barra de confirmação do swipe
+// Abre o Modal com Animação Motion + Lottie
+function openCompleteModal(questId) {
+    currentQuestIdToComplete = questId;
+    const quest = mockQuests.find(q => q.id === questId);
+    if(quest) {
+        document.getElementById('modal-reward').innerText = `+${quest.xp} XP | +${quest.xp / 2} Moedas`;
+    }
+
+    overlay.classList.add('active');
+
+    if (typeof Motion !== 'undefined') {
+        Motion.animate(overlay, { opacity: [0, 1] }, { duration: 0.2 });
+        Motion.animate(modal, { transform: ['translateY(30px) scale(0.9)', 'translateY(0px) scale(1)'] }, { duration: 0.3, easing: [0.175, 0.885, 0.32, 1.275] });
+    }
+
+    if (lottieAnimation) {
+        lottieAnimation.goToAndPlay(0, true);
+    }
+}
+
+// Fecha o Modal e remove a missão concluída
+closeBtn.addEventListener('click', () => {
+    if (typeof Motion !== 'undefined') {
+        Motion.animate(overlay, { opacity: [1, 0] }, { duration: 0.2 }).finished.then(closeModalAction);
+    } else {
+        closeModalAction();
+    }
+});
+
+function closeModalAction() {
+    overlay.classList.remove('active');
+    if (currentQuestIdToComplete !== null) {
+        const quest = mockQuests.find(q => q.id === currentQuestIdToComplete);
+        if (quest) {
+            currentXP += quest.xp;
+            document.getElementById('player-xp').innerText = `Nível 5 | ${currentXP} XP`;
+        }
+        deleteQuest(currentQuestIdToComplete);
+        currentQuestIdToComplete = null;
+    }
+}
+
 function toggleSwipeBox(questId) {
     const swipeBox = document.getElementById(`swipe-box-${questId}`);
     swipeBox.classList.toggle('active');
 }
 
-// REQUISITO 3: Implementação dos Eventos de Gesture (Touch / Mouse Drag)
 function setupSwipeEvents(questId) {
     const track = document.getElementById(`track-${questId}`);
     const thumb = document.getElementById(`thumb-${questId}`);
     const text = document.getElementById(`text-${questId}`);
-    
-    let isDragging = false;
-    let startX = 0;
-    let currentX = 0;
+    let isDragging = false, startX = 0, currentX = 0;
 
-    function getX(e) {
-        return e.touches ? e.touches[0].clientX : e.clientX;
-    }
+    function getX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
 
     function onStart(e) {
-        isDragging = true;
-        startX = getX(e);
-        thumb.style.transition = 'none';
+        isDragging = true; startX = getX(e); thumb.style.transition = 'none';
     }
 
     function onMove(e) {
         if (!isDragging) return;
-        const x = getX(e);
         const maxDrag = track.clientWidth - thumb.clientWidth - 4;
-        let diff = x - startX;
-
+        let diff = getX(e) - startX;
         if (diff < 0) diff = 0;
         if (diff > maxDrag) diff = maxDrag;
-
         currentX = diff;
         thumb.style.transform = `translateX(${currentX}px)`;
-
-        // Esconde o texto suavemente à medida que o usuário arrasta
-        const progress = currentX / maxDrag;
-        text.style.opacity = (1 - progress).toString();
+        text.style.opacity = (1 - (currentX / maxDrag)).toString();
     }
 
     function onEnd() {
         if (!isDragging) return;
         isDragging = false;
-
         const maxDrag = track.clientWidth - thumb.clientWidth - 4;
-        const progress = currentX / maxDrag;
-
-        // Se arrastou mais de 85% do caminho, confirma a exclusão
-        if (progress >= 0.85) {
+        if (currentX / maxDrag >= 0.85) {
             thumb.style.transform = `translateX(${maxDrag}px)`;
             deleteQuest(questId);
         } else {
-            // Retorna ao início com animação suave se não chegou até o final
             thumb.style.transition = 'transform 0.3s ease';
             thumb.style.transform = 'translateX(0px)';
             text.style.opacity = '1';
@@ -130,18 +184,14 @@ function setupSwipeEvents(questId) {
         }
     }
 
-    // Eventos de Toque (Mobile)
     thumb.addEventListener('touchstart', onStart, { passive: true });
     window.addEventListener('touchmove', onMove, { passive: true });
     window.addEventListener('touchend', onEnd);
-
-    // Eventos de Mouse (Desktop)
     thumb.addEventListener('mousedown', onStart);
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onEnd);
 }
 
-// Remove a missão da lista e atualiza a tela
 function deleteQuest(questId) {
     const card = document.getElementById(`quest-${questId}`);
     if (card) {
@@ -154,6 +204,6 @@ function deleteQuest(questId) {
     }
 }
 
-// Fluxo de execução: Exibe Skeletons -> Aguarda 3 segundos -> Renderiza Dados
+// Inicialização: Skeletons -> 3 segundos -> Dados Reais
 renderSkeletons();
 setTimeout(renderRealData, 3000);
