@@ -4,6 +4,7 @@
     --primary: #bb86fc;
     --gold: #ffd700;
     --danger: #ff5252;
+    --success: #10b981;
     --skeleton-base: #2a2a2a;
     --skeleton-highlight: #3a3a3a;
     --text: #ffffff;
@@ -14,7 +15,7 @@
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
 }
 
 body { 
@@ -49,15 +50,11 @@ body {
     border-radius: 12px; 
     padding: 16px; 
     margin-bottom: 16px; 
-    position: relative;
     border: 1px solid #333; 
     transition: transform 0.3s, opacity 0.3s;
 }
 
-.skeleton-wrapper {
-    display: flex;
-    gap: 16px;
-}
+.skeleton-wrapper { display: flex; gap: 16px; }
 
 .skeleton { 
     animation: pulse 1.5s ease-in-out infinite alternate; 
@@ -74,139 +71,82 @@ body {
 .skeleton-line { height: 14px; width: 100%; }
 .skeleton-line.short { width: 60%; }
 
-/* --- Conteúdo dos Cards de Missões --- */
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-}
-
-.card-main {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
+/* --- Cards de Missões Reais --- */
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.card-main { display: flex; gap: 12px; align-items: center; }
 .quest-icon { font-size: 32px; }
 .quest-info h3 { font-size: 16px; margin-bottom: 4px; color: var(--primary); }
 .quest-info p { font-size: 13px; color: var(--text-secondary); }
 .reward { color: var(--gold); font-weight: bold; font-size: 12px; margin-top: 6px; display: block; }
 
-/* REQUISITO 3: Botão de Lixeira Sempre Visível */
-.btn-delete-trigger {
-    background: transparent;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 6px;
-    transition: background 0.2s;
-}
+.card-actions { display: flex; gap: 4px; }
+.btn-action { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 6px; border-radius: 6px; }
+.btn-action:hover { background-color: rgba(255, 255, 255, 0.1); }
 
-.btn-delete-trigger:hover {
-    background-color: rgba(255, 82, 82, 0.2);
-}
-
-/* REQUISITO 3: Caixa de Confirmação com Swipe to Delete */
-.swipe-confirm-box {
-    display: none;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px dashed #444;
-}
-
-.swipe-confirm-box.active {
-    display: block;
-}
+/* REQUISITO 3: Swipe to Delete --- */
+.swipe-confirm-box { display: none; margin-top: 14px; padding-top: 12px; border-top: 1px dashed #444; }
+.swipe-confirm-box.active { display: block; }
 
 .swipe-track {
-    position: relative;
-    width: 100%;
-    height: 48px;
-    background-color: #2a1a1a;
-    border: 1px solid var(--danger);
-    border-radius: 24px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    touch-action: pan-x;
+    position: relative; width: 100%; height: 48px;
+    background-color: #2a1a1a; border: 1px solid var(--danger);
+    border-radius: 24px; overflow: hidden; display: flex;
+    align-items: center; justify-content: center; user-select: none; touch-action: pan-x;
 }
 
-.swipe-text {
-    font-size: 12px;
-    color: var(--danger);
-    font-weight: bold;
-    pointer-events: none;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+.swipe-text { font-size: 11px; color: var(--danger); font-weight: bold; pointer-events: none; text-transform: uppercase; }
 
 .swipe-thumb {
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    width: 42px;
-    height: 42px;
-    background-color: var(--danger);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    cursor: grab;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    z-index: 2;
+    position: absolute; left: 2px; top: 2px; width: 42px; height: 42px;
+    background-color: var(--danger); border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; color: white; font-weight: bold; cursor: grab; z-index: 2;
 }
 
-.swipe-thumb:active {
-    cursor: grabbing;
-}
-
-/* --- REQUISITO 1: Zona do Polegar (Bottom Nav & FAB) --- */
+/* REQUISITO 1: Zona do Polegar --- */
 .bottom-nav { 
-    position: fixed; 
-    bottom: 0; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 480px; 
-    background: var(--surface); 
-    display: flex; 
-    justify-content: space-around; 
-    padding: 16px 0; 
-    border-top: 1px solid #333; 
-    z-index: 1000; 
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 480px; background: var(--surface); 
+    display: flex; justify-content: space-around; padding: 16px 0; 
+    border-top: 1px solid #333; z-index: 1000; 
 }
 
-.nav-item { 
-    background: none; 
-    border: none; 
-    color: var(--text-secondary); 
-    font-weight: 600; 
-    font-size: 14px; 
-    cursor: pointer; 
-}
-
+.nav-item { background: none; border: none; color: var(--text-secondary); font-weight: 600; font-size: 14px; cursor: pointer; }
 .nav-item.active { color: var(--primary); }
 
 .fab { 
-    position: absolute; 
-    top: -28px; 
-    right: 24px; 
-    width: 56px; 
-    height: 56px; 
-    border-radius: 50%; 
-    background-color: var(--primary); 
-    color: #000; 
-    border: none; 
-    font-size: 28px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    box-shadow: 0 4px 10px rgba(187, 134, 252, 0.4); 
-    cursor: pointer;
+    position: absolute; top: -28px; right: 24px; width: 56px; height: 56px; 
+    border-radius: 50%; background-color: var(--primary); color: #000; 
+    border: none; font-size: 28px; display: flex; align-items: center; 
+    justify-content: center; box-shadow: 0 4px 10px rgba(187, 134, 252, 0.4); cursor: pointer;
+}
+
+/* REQUISITO 4 (A4): Modal e Micro-interações --- */
+.modal-overlay {
+    position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.85);
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 2000;
+}
+
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+.modal-card {
+    background-color: #1e1e1e; border: 1px solid #333; padding: 32px;
+    border-radius: 20px; text-align: center; width: 310px;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.8);
+    transform: translateY(20px) scale(0.95); transition: transform 0.3s ease;
+}
+
+#lottie-container { width: 110px; height: 110px; margin: 0 auto 12px auto; }
+.modal-card h2 { font-size: 1.3rem; color: var(--primary); margin-bottom: 8px; }
+.modal-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
+
+.xp-gain {
+    display: inline-block; background-color: rgba(255, 215, 0, 0.15);
+    color: var(--gold); border: 1px solid var(--gold);
+    padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 20px;
+}
+
+.btn-collect {
+    background-color: var(--success); color: #ffffff; border: none;
+    padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; font-size: 1rem;
 }
