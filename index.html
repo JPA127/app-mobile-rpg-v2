@@ -3,41 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>RPG Produtividade - PWA</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<base target="_blank">
 </head>
 <body>
-    <!-- Cabeçalho do Jogador -->
+    <!-- ===== HEADER ===== -->
     <header class="app-header">
-        <h1>Missões Ativas</h1>
-        <span class="xp-badge" id="player-xp">Nível 5 | 1200 XP</span>
+        <div class="header-stats">
+            <div class="stat-block">
+                <span class="stat-label">Nível</span>
+                <span class="stat-value level-value" id="player-level">1</span>
+            </div>
+            <div class="stat-block xp-block">
+                <div class="xp-bar-header">
+                    <div class="xp-fill-header" id="header-xp-fill" style="width: 0%"></div>
+                </div>
+                <span class="xp-text-header"><span id="header-current-xp">0</span> / <span id="header-max-xp">100</span> XP</span>
+            </div>
+            <div class="stat-block gold-block">
+                <span class="stat-label">Bolso</span>
+                <span class="stat-value gold-value">🪙 <span id="player-gold">0</span></span>
+            </div>
+        </div>
     </header>
 
-    <!-- Área do Feed de Missões (Skeletons e Cards Reais) -->
-    <main id="quest-board" class="feed">
-        <!-- Injetado via JavaScript -->
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <!-- ABA MISSÕES -->
+        <section class="tab-content active" id="tab-missoes">
+            <h2 class="section-title">⚔️ Missões Ativas</h2>
+            <div id="quest-board" class="feed">
+                <!-- Injetado via JS -->
+            </div>
+        </section>
+
+        <!-- ABA LOJA -->
+        <section class="tab-content" id="tab-loja">
+            <h2 class="section-title">🏪 Loja de Recompensas</h2>
+            <div class="gold-display">
+                <span class="gold-big">🪙 <span id="shop-gold">0</span></span>
+                <span class="gold-label">ouro disponível</span>
+            </div>
+            <div id="shop-list" class="shop-feed">
+                <!-- Injetado via JS -->
+            </div>
+        </section>
+
+        <!-- ABA PERFIL -->
+        <section class="tab-content" id="tab-perfil">
+            <h2 class="section-title">🛡️ Perfil do Herói</h2>
+            <div class="profile-card">
+                <div class="profile-avatar" id="profile-avatar">🧙</div>
+                <h3 class="profile-name">Aventureiro</h3>
+                <p class="profile-rank">Rank: <span id="profile-rank">E</span></p>
+
+                <div class="profile-xp-bar">
+                    <div class="profile-xp-fill" id="profile-xp-fill" style="width: 0%"></div>
+                </div>
+                <p class="profile-xp-text"><span id="profile-current-xp">0</span> / <span id="profile-max-xp">100</span> XP</p>
+
+                <div class="profile-stats-grid">
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon">📊</span>
+                        <span class="profile-stat-value" id="stat-level">1</span>
+                        <span class="profile-stat-label">Nível</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon">✅</span>
+                        <span class="profile-stat-value" id="stat-completed">0</span>
+                        <span class="profile-stat-label">Missões</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon">⚡</span>
+                        <span class="profile-stat-value" id="stat-total-xp">0</span>
+                        <span class="profile-stat-label">XP Total</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon">🪙</span>
+                        <span class="profile-stat-value" id="stat-gold">0</span>
+                        <span class="profile-stat-label">Ouro</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon">💰</span>
+                        <span class="profile-stat-value" id="stat-spent">0</span>
+                        <span class="profile-stat-label">Gasto</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon">🏆</span>
+                        <span class="profile-stat-value" id="stat-rank">E</span>
+                        <span class="profile-stat-label">Rank</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- REQUISITO 1: ZONA DO POLEGAR (Bottom Nav + FAB) -->
+    <!-- ===== FAB ===== -->
+    <button class="fab" id="add-btn" aria-label="Nova Missão">+</button>
+
+    <!-- ===== BOTTOM NAV ===== -->
     <nav class="bottom-nav">
-        <button class="nav-item active">⚔️ Missões</button>
-        <button class="nav-item">💰 Loja</button>
-        <button class="nav-item">🛡️ Perfil</button>
-        <button class="fab" id="add-btn" aria-label="Nova Missão">+</button>
+        <button class="nav-item active" data-tab="missoes">
+            <span class="nav-icon">⚔️</span>
+            <span class="nav-label">Missões</span>
+        </button>
+        <button class="nav-item" data-tab="loja">
+            <span class="nav-icon">🏪</span>
+            <span class="nav-label">Loja</span>
+        </button>
+        <button class="nav-item" data-tab="perfil">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-label">Perfil</span>
+        </button>
     </nav>
 
-    <!-- REQUISITO 4 (A4): MODAL DE RECOMPENSA (Lottie + Motion One) -->
+    <!-- ===== MODAL: CRIAR MISSÃO ===== -->
+    <div id="create-overlay" class="modal-overlay">
+        <div id="create-modal" class="modal-card create-modal">
+            <h2>⚔️ Nova Missão</h2>
+            <p class="modal-subtitle">Forje uma nova tarefa para seu herói</p>
+
+            <div class="form-group">
+                <label for="quest-name">Nome da Missão</label>
+                <input type="text" id="quest-name" placeholder="Ex: Estudar JavaScript" maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="quest-desc">Descrição</label>
+                <textarea id="quest-desc" placeholder="Ex: Revisar closures e promises" rows="2" maxlength="120"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="quest-diff">Dificuldade</label>
+                    <select id="quest-diff">
+                        <option value="easy">🟢 Fácil</option>
+                        <option value="medium" selected>🟡 Médio</option>
+                        <option value="hard">🔴 Difícil</option>
+                        <option value="epic">🟣 Épico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quest-days">Prazo (dias)</label>
+                    <input type="number" id="quest-days" value="3" min="1" max="30">
+                </div>
+            </div>
+
+            <div class="reward-preview" id="reward-preview">
+                <span class="reward-preview-label">Recompensa estimada:</span>
+                <span class="reward-preview-value">⚡ 1-10 XP | 🪙 1-5 Ouro</span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="create-cancel">Cancelar</button>
+                <button class="btn btn-primary" id="create-submit">Criar Missão</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: RECOMPENSA ===== -->
     <div id="overlay" class="modal-overlay">
-        <div id="modal" class="modal-card">
+        <div id="modal" class="modal-card reward-modal">
             <div id="lottie-container"></div>
             <h2>Missão Concluída! 🏆</h2>
             <p id="modal-desc">Você derrotou a tarefa e evoluiu seu herói.</p>
-            <div class="xp-gain" id="modal-reward">+100 XP | +50 Moedas</div>
+            <div class="xp-gain" id="modal-reward">+100 XP | +50 Ouro</div>
+            <div class="level-up-banner" id="level-up-banner" style="display:none">
+                <span>🎉 LEVEL UP! Nível <span id="new-level">2</span></span>
+            </div>
             <button id="close-btn" class="btn btn-collect">Coletar Recompensa</button>
         </div>
     </div>
 
-    <!-- CDNs das Animações -->
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@motionone/dom/dist/motion.prod.js"></script>
     <script src="script.js"></script>
